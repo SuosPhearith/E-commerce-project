@@ -1,0 +1,179 @@
+Table user{
+  id int pk
+  fullName varchar
+  email varchar
+  password varchar
+  image varchar
+  roleId int [ref: - role.id]
+  status bolean
+  createdAt date
+  updatedAt date
+}
+
+Table contact_info{
+  id int pk
+  userId int [ref: - user.id]
+  phone varchar
+  country varchar
+  zipCode varchar
+}
+Table role{
+  id int pk
+  name varchar
+  description text
+}
+Table slide{
+  id int pk
+  title varchar
+  image varchar
+  color varchar
+  productId int
+  updatedBy int [ref: - user.id]
+  updatedAt date
+}
+Table header{
+  id int pk
+  phone varchar
+  email varchar
+  location varchar
+  locationUrl varchar
+  facebookUrl varchar
+  instagramUrl varchar
+  twitterUrl varchar
+  logoImage varchar
+  updatedAt date
+  updatedBy int [ref: - user.id]
+}
+Table follow_us{
+  id int pk
+  title varchar
+  description text
+  url varchar
+  updatedAt date
+  updatedBy int [ref: - user.id]
+}
+Table footer{
+  id int pk 
+  leftTitle varchar 
+  leftDescription text
+  centerTitle varchar
+  centerDescription text
+  rightTitle varchar
+  rgihtDescription text
+  updatedAt date
+  updatedBy int [ref: - user.id]
+}
+Table contact{
+  id int pk
+  title varchar
+  description text
+  location varchar
+  locationUrl varchar
+  phone varchar
+  startWorking varchar
+  endWorking varchar
+  updatedAt date
+  updatedBy int [ref: - user.id]
+}
+Table category{
+  id int pk
+  name varchar
+  description text
+  parentId int [ref: - category.id]
+  createdAt date
+  updatedAt date
+  modifiedBy int [ref: - user.id]
+}
+Table product{
+  id int pk
+  name varchar
+  price float
+  description text
+  sku varchar
+  categoryId int [ref: > category.id]
+  discount int 
+  tags varchar
+  additionalInformation text
+  averageReview float
+  createdAt date
+  updatedAt date
+  modifiedBy int [ref: - user.id]
+}
+Table color{
+  id int pk
+  name varchar
+  description text
+}
+Table size{
+  id int pk
+  name varchar
+  description text
+}
+Table product_size_color{
+  id int pk
+  productId int [ref: > product.id]
+  sizeId int [ref: > size.id]
+  colorId int [ref: > color.id]
+  quantity int 
+}
+Table product_image{
+  id int pk
+  productId int [ref: > product.id]
+  image varchar
+}
+###################
+Table review{
+  id int pk
+  userId int [ref: > user.id]
+  productId int [ref: > product.id]
+  rating int 
+  description text
+  createdAt date
+  updatedAt date
+}
+Table cart{
+  id int pk
+  userId int [ref: > user.id]
+  productId int [ref: > product.id]
+  quantity int 
+}
+Table wishlist{
+  id int pk
+  userId int [ref: > user.id]
+  productId int [ref: > product.id]
+}
+Table product_status{
+  id int pk
+  name varchar
+  description text
+}
+Table order{
+  id int pk
+  statusId int [ref: - product_status.id]
+  createdAt date
+}
+Table order_detail{
+  id int pk
+  userId int [ref: > user.id]
+  productId int [ref: > product.id]
+  billingDetailId int [ref: > billing_detail.id]
+  paymentMethodId int [ref: > payment_method.id]
+  total float
+}
+Table payment_method{
+  id int pk
+  name varchar
+  description text
+}
+Table billing_detail{
+  id int pk
+  fullName varchar
+  country varchar
+  city varchar
+  street varchar
+  zipCode varchar
+  phone varchar
+  email varchar
+  createdAt date
+  createdBy int [ref: > user.id]
+}
