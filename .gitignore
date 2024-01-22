@@ -33,3 +33,25 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+
+### laravel
+/api_v2/.phpunit.cache
+/api_v2/node_modules
+/api_v2/public/build
+/api_v2/public/hot
+/api_v2/public/storage
+/api_v2/storage/*.key
+/api_v2/vendor
+/api_v2/.env
+/api_v2/.env.backup
+/api_v2/.env.production
+/api_v2/.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode
