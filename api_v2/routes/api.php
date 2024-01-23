@@ -23,13 +23,7 @@ use Symfony\Component\Finder\Iterator\CustomFilterIterator;
 |-------------------------------------------------------------------------- 
 */
 
-Route::post('register', [UserAuthController::class, 'register']);
-Route::post('login', [UserAuthController::class, 'login']);
-
-Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::group(['middleware' => 'authorization:1,2,3'], function () {
-        Route::get('me', [UserAuthController::class, 'me']);
-    });
-
-    Route::get('logout', [UserAuthController::class, 'logout']);
+// ===> Manage route
+Route::group(['prefix' => 'v2'], function () {
+    require(__DIR__ . '/api/main.php');
 });

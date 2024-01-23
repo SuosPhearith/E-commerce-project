@@ -58,9 +58,10 @@ class UserAuthController extends Controller
                 ], Response::HTTP_UNAUTHORIZED);
             }
             $token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
+            $cookie = cookie('jwt', $token, 60 * 24 * 30);
             return response()->json([
-                'access_token' => $token,
-            ], Response::HTTP_OK);
+                'message' => 'Success'
+            ], Response::HTTP_OK)->withCookie($cookie);
         } catch (ValidationException $e) {
             // Validation error
             return response()->json([
