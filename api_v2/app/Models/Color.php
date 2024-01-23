@@ -12,5 +12,6 @@ class Color extends Model
     protected $fillable = [
         'name',
         'description',
+        'modified_by',
     ];
 }

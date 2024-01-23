@@ -2,135 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Phearith\BaseCrudController;
 use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
-class SizeController extends Controller
+class SizeController extends BaseCrudController
 {
-    public function getAll()
-    {
-        try {
-            $sizes = Size::all();
-            return response()->json($sizes, Response::HTTP_OK);
-        } catch (ValidationException $e) {
-            // Validation error
-            return response()->json([
-                'message' => 'Validation Error',
-                'errors' => $e->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        } catch (\Exception $e) {
-            // ===> Unexpected error
-            return response()->json([
-                'message' => 'Server Error',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function getById($id)
-    {
-        try {
-            $size = Size::find($id);
-            if (!$size) {
-                return response()->json(['message' => 'Size not found'], Response::HTTP_NOT_FOUND);
-            }
-            return response()->json($size, Response::HTTP_OK);
-        } catch (ValidationException $e) {
-            // Validation error
-            return response()->json([
-                'message' => 'Validation Error',
-                'errors' => $e->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        } catch (\Exception $e) {
-            // ===> Unexpected error
-            return response()->json([
-                'message' => 'Server Error',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+    protected $model = Size::class;
 
     public function create(Request $request)
     {
         try {
             $request->validate([
-                'name' => 'required|string|unique:sizes',
+                'name' => ['required', 'string', Rule::unique('sizes')],
                 'description' => 'nullable|string',
             ]);
-
-            $size = Size::create($request->all());
-
-            return response()->json($size, Response::HTTP_CREATED);
+            $data = $request->all();
+            $data['modified_by'] = $this->getCurrentUserId();
+            $item = $this->model::create($data);
+            return response()->json($item, Response::HTTP_CREATED);
         } catch (ValidationException $e) {
-            // Validation error
-            return response()->json([
-                'message' => 'Validation Error',
-                'errors' => $e->errors(),
-            ], Response::HTTP_BAD_REQUEST);
+            return $this->handleValidationException($e);
         } catch (\Exception $e) {
-            // ===> Unexpected error
-            return response()->json([
-                'message' => 'Server Error',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->handleUnexpectedException($e);
         }
     }
-
     public function update(Request $request, $id)
     {
         try {
-            $size = Size::find($id);
-
-            if (!$size) {
-                return response()->json(['message' => 'Size not found'], Response::HTTP_NOT_FOUND);
+            $item = $this->model::find($id);
+            if (!$item) {
+                return response()->json(['message' => $this->getModelName() . ' not found'], Response::HTTP_NOT_FOUND);
             }
-
-            $request->validate([
-                'name' => 'required|string|unique:sizes',
+            $data = $request->validate([
+                'name' => ['required', 'string', Rule::unique('sizes')->ignore($id)],
                 'description' => 'nullable|string',
             ]);
-
-            $size->update($request->all());
-
-            return response()->json($size, Response::HTTP_OK);
+            $data['modified_by'] = $this->getCurrentUserId();
+            $item->update($data);
+            return response()->json($item, Response::HTTP_OK);
         } catch (ValidationException $e) {
-            // Validation error
-            return response()->json([
-                'message' => 'Validation Error',
-                'errors' => $e->errors(),
-            ], Response::HTTP_BAD_REQUEST);
+            return $this->handleValidationException($e);
         } catch (\Exception $e) {
-            // ===> Unexpected error
-            return response()->json([
-                'message' => 'Server Error',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function delete($id)
-    {
-        try {
-            $size = Size::find($id);
-
-            if (!$size) {
-                return response()->json(['message' => 'Size not found'], Response::HTTP_NOT_FOUND);
-            }
-
-            $size->delete();
-
-            return response()->json(['message' => 'Size deleted successfully'], Response::HTTP_OK);
-
-            return response()->json($size, Response::HTTP_OK);
-        } catch (ValidationException $e) {
-            // Validation error
-            return response()->json([
-                'message' => 'Validation Error',
-                'errors' => $e->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        } catch (\Exception $e) {
-            // ===> Unexpected error
-            return response()->json([
-                'message' => 'Server Error',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->handleUnexpectedException($e);
         }
     }
 }

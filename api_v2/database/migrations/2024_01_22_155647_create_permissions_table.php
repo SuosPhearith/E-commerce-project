@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable(false);
             $table->text('description')->nullable();
+            $table->unsignedBigInteger('modified_by')->nullable();
+            $table->foreign('modified_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
         });
     }
