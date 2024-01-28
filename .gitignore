@@ -1,6 +1,7 @@
 # compiled output
 /api_v1/dist
 /api_v1/node_modules
+/web/node_modules
 
 # Logs
 logs

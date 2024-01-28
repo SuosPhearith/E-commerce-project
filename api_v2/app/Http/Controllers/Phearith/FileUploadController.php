@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Phearith;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class FileUploadController extends Controller
@@ -58,5 +59,14 @@ class FileUploadController extends Controller
                 'message' => 'Server Error',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+    public static function storeImage($image, $directory = "uploads")
+    {
+        return "storage/" . $image->store($directory, "public");
+    }
+    public static function DeleteImage($imageUrl)
+    {
+        $filePath = 'public/' . str_replace('storage/', '', $imageUrl);
+        Storage::delete($filePath);
     }
 }
